@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrati · TechStore</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css2?f[]=noorda@400,500,600,700&display=swap" rel="stylesheet" />
+  <style>
+
+    /* ═══════════════════════════════════════════════
+       RESET & VARIABILI
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --clr-accent:     #0058a3;
+      --clr-accent-hov: #004080;
+      --clr-accent-lt:  #e8f0fb;
+      --clr-text:       #1a1a2e;
+      --clr-muted:      #6b7280;
+      --clr-border:     #e2e5ea;
+      --clr-bg:         #f5f6f8;
+      --font:           'Noorda', sans-serif;
+      --radius:         8px;
+      --ease:           cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html, body { font-family: var(--font); background: #fff; color: var(--clr-text); }
+
+    /* ═══════════════════════════════════════════════
+       LAYOUT SPLIT
+    ═══════════════════════════════════════════════ */
+    .page {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: 100dvh;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PANNELLO SINISTRO (fisso)
+    ═══════════════════════════════════════════════ */
+    .panel-left {
+      background: var(--clr-accent);
+      position: sticky;
+      top: 0;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 40px;
+      overflow: hidden;
+    }
+
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      top: -130px; right: -170px;
+    }
+    .panel-left::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      bottom: -70px; left: -80px;
+    }
+
+    .panel-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-copy { position: relative; z-index: 1; }
+
+    .panel-copy .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .panel-copy h2 {
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .panel-copy p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PANNELLO DESTRO (scrollabile)
+    ═══════════════════════════════════════════════ */
+    .panel-right {
+      background: #fff;
+      padding: 56px clamp(32px, 5vw, 72px) 72px;
+      overflow-y: auto;
+    }
+
+    .form-header { margin-bottom: 40px; }
+
+    .form-header h1 {
+      font-size: clamp(1.5rem, 3vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .form-header p {
+      font-size: 0.875rem;
+      color: var(--clr-muted);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SEZIONI FORM
+    ═══════════════════════════════════════════════ */
+    .form-section { margin-bottom: 36px; }
+
+    .form-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--clr-accent);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--clr-border);
+    }
+
+    /* ═══════════════════════════════════════════════
+       GRIGLIA CAMPI
+    ═══════════════════════════════════════════════ */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+    .field-grid .full { grid-column: 1 / -1; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--clr-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .optional {
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: #b0b8c8;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-left: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       INPUTS
+    ═══════════════════════════════════════════════ */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 10px 13px;
+      background: #fff;
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius);
+      color: var(--clr-text);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      outline: none;
+      appearance: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus,
+    select:focus {
+      border-color: var(--clr-accent);
+      box-shadow: 0 0 0 3px rgba(0,88,163,0.10);
+    }
+    input::placeholder { color: #c0c8d4; }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PASSWORD TOGGLE
+    ═══════════════════════════════════════════════ */
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrap input { padding-right: 44px; }
+
+    .toggle-pw {
+      position: absolute;
+      right: 11px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: #c0c8d4;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+      line-height: 0;
+    }
+    .toggle-pw:hover { color: var(--clr-muted); }
+
+    /* ═══════════════════════════════════════════════
+       SWITCH TIPO ACCOUNT
+    ═══════════════════════════════════════════════ */
+    .account-type-switch {
+      display: flex;
+      align-items: center;
+      background: var(--clr-bg);
+      border: 1.5px solid var(--clr-border);
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .switch-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--clr-muted);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+    .switch-option.active {
+      background: #fff;
+      color: var(--clr-accent);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+
+    /* ═══════════════════════════════════════════════
+       CAMPI AZIENDA (nascosti di default)
+    ═══════════════════════════════════════════════ */
+    .company-fields { display: none; }
+    .company-fields.visible {
+      display: block;
+      animation: fadeIn 0.25s var(--ease);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════════
+       CHECKBOX IOS-STYLE
+    ═══════════════════════════════════════════════ */
+    .ios-checkbox {
+      --checkbox-size:   20px;
+      --checkbox-color:  #22c55e;
+      --checkbox-bg:     #dcfce7;
+      --checkbox-border: #d1d5db;
+
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+
+    .ios-checkbox input { display: none; }
+
+    .checkbox-wrapper {
+      position: relative;
+      width: var(--checkbox-size);
+      height: var(--checkbox-size);
+      border-radius: 2px;
+      transition: transform 0.2s ease;
+    }
+
+    .checkbox-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 2px;
+      border: 2px solid var(--checkbox-border);
+      background: white;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-icon {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 80%;
+      height: 80%;
+      color: white;
+      transform: scale(0);
+      transition: all 0.2s ease;
+    }
+
+    .check-path {
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      transition: stroke-dashoffset 0.3s ease 0.1s;
+    }
+
+    /* Stato checked */
+    .ios-checkbox input:checked + .checkbox-wrapper .checkbox-bg {
+      background: var(--checkbox-color);
+      border-color: var(--checkbox-color);
+    }
+    .ios-checkbox input:checked + .checkbox-wrapper .checkbox-icon {
+      transform: scale(1);
+    }
+    .ios-checkbox input:checked + .checkbox-wrapper .check-path {
+      stroke-dashoffset: 0;
+    }
+
+    /* Focus */
+    .ios-checkbox input:focus + .checkbox-wrapper .checkbox-bg {
+      box-shadow: 0 0 0 4px var(--checkbox-bg);
+    }
+
+    /* Animazione bounce al check */
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.1); }
+    }
+    .ios-checkbox input:checked + .checkbox-wrapper {
+      animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ═══════════════════════════════════════════════
+       RIGHE CONSENSO
+    ═══════════════════════════════════════════════ */
+    .consent-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .consent-row .ios-checkbox { margin-top: 0.1em; }
+
+    .consent-text {
+      font-size: 0.875rem;
+      color: var(--clr-text);
+      line-height: 1.6;
+    }
+    .consent-text .required { color: #e53935; margin-left: 2px; }
+
+    .gdpr-note {
+      font-size: 0.75rem;
+      color: var(--clr-muted);
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+    .gdpr-note a { color: var(--clr-accent); text-decoration: none; }
+    .gdpr-note a:hover { text-decoration: underline; }
+
+    /* ═══════════════════════════════════════════════
+       BOTTONE SUBMIT
+    ═══════════════════════════════════════════════ */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      background: var(--clr-accent);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-submit:hover  { background: var(--clr-accent-hov); }
+    .btn-submit:active { transform: scale(0.99); }
+
+    .auth-footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--clr-muted);
+    }
+    .auth-footer a {
+      color: var(--clr-accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .auth-footer a:hover { opacity: 0.7; }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 860px) {
+      .page { grid-template-columns: 1fr; }
+      .panel-left { display: none; }
+      .panel-right { padding: 40px 20px 60px; }
+    }
+
+    @media (max-width: 480px) {
+      .field-grid { grid-template-columns: 1fr; }
+      .field-grid .full { grid-column: 1; }
+    }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════════════════════════════════════
+       PANNELLO SINISTRO
+  ═══════════════════════════════════════════════ -->
+  <div class="panel-left">
+    <a href="index.html" class="panel-brand">
+      <svg width="22" height="22" viewBox="0 0 16 16" fill="#fff"><circle cx="8" cy="8" r="8"/></svg>
+      TechStore
+    </a>
+    <div class="panel-copy">
+      <div class="badge">
+        <svg width="7" height="7" viewBox="0 0 8 8" fill="#fff"><circle cx="4" cy="4" r="4"/></svg>
+        Nuovo account
+      </div>
+      <h2>Unisciti a<br/>TechStore.</h2>
+      <p>Registrati per accedere al catalogo completo, tracciare i tuoi ordini e ricevere offerte esclusive riservate ai membri.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PANNELLO DESTRO — FORM
+  ═══════════════════════════════════════════════ -->
+  <div class="panel-right">
+
+    <div class="form-header">
+      <h1>Crea un account</h1>
+      <p>Compila i campi per completare la registrazione.</p>
+    </div>
+
+    <!-- ── Credenziali di accesso ── -->
+    <div class="form-section">
+      <div class="form-section-title">Credenziali di accesso</div>
+      <div class="field-grid">
+
+        <div class="form-group full">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="nome@esempio.com" autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" />
+            <button class="toggle-pw" type="button" aria-label="Mostra password" onclick="togglePw(this,'pw1')">
+              <svg id="pw1-hide" width="17" height="17" fill="currentColor" viewBox="0 0 16 16">
+                <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+              </svg>
+              <svg id="pw1-show" width="17" height="17" fill="currentColor" viewBox="0 0 16 16" style="display:none">
+                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password2">Conferma password</label>
+          <div class="input-wrap">
+            <input type="password" id="password2" placeholder="••••••••" autocomplete="new-password" />
+            <button class="toggle-pw" type="button" aria-label="Mostra password" onclick="togglePw(this,'pw2')">
+              <svg id="pw2-hide" width="17" height="17" fill="currentColor" viewBox="0 0 16 16">
+                <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+              </svg>
+              <svg id="pw2-show" width="17" height="17" fill="currentColor" viewBox="0 0 16 16" style="display:none">
+                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Tipo di account ── -->
+    <div class="form-section">
+      <div class="form-section-title">Tipo di account</div>
+      <div class="account-type-switch">
+        <div class="switch-option active" id="opt-privato" onclick="setType('privato')">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+          </svg>
+          Privato
+        </div>
+        <div class="switch-option" id="opt-azienda" onclick="setType('azienda')">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
+            <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
+          </svg>
+          Azienda
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Informazioni personali ── -->
+    <div class="form-section">
+      <div class="form-section-title">Informazioni personali</div>
+      <div class="field-grid">
+
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" placeholder="Mario" autocomplete="given-name" />
+        </div>
+
+        <div class="form-group">
+          <label for="cognome">Cognome</label>
+          <input type="text" id="cognome" placeholder="Rossi" autocomplete="family-name" />
+        </div>
+
+        <div class="form-group full">
+          <label for="generalita">Generalità</label>
+          <input type="text" id="generalita" placeholder="Es. nato a Roma, cittadinanza italiana" />
+        </div>
+
+        <div class="form-group">
+          <label for="nascita">Data di nascita</label>
+          <input type="date" id="nascita" autocomplete="bday" />
+        </div>
+
+        <div class="form-group">
+          <label for="tel">Telefono</label>
+          <input type="tel" id="tel" placeholder="+39 000 0000000" autocomplete="tel" />
+        </div>
+
+        <div class="form-group full">
+          <label for="tel2">Secondo numero <span class="optional">(opzionale)</span></label>
+          <input type="tel" id="tel2" placeholder="+39 000 0000000" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Dati azienda (visibili solo se "Azienda") ── -->
+    <div class="form-section company-fields" id="company-fields">
+      <div class="form-section-title">Dati azienda</div>
+      <div class="field-grid">
+
+        <div class="form-group">
+          <label for="piva">Partita IVA</label>
+          <input type="text" id="piva" placeholder="IT00000000000" />
+        </div>
+
+        <div class="form-group">
+          <label for="ragsoc">Ragione Sociale</label>
+          <input type="text" id="ragsoc" placeholder="Azienda S.r.l." />
+        </div>
+
+        <div class="form-group">
+          <label for="codfis">Codice Fiscale</label>
+          <input type="text" id="codfis" placeholder="RSSMRA80A01H501U" />
+        </div>
+
+        <div class="form-group">
+          <label for="sdi">Codice SDI</label>
+          <input type="text" id="sdi" placeholder="XXXXXXX" maxlength="7" />
+        </div>
+
+        <div class="form-group full">
+          <label for="pec">Indirizzo PEC</label>
+          <input type="email" id="pec" placeholder="azienda@pec.it" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Indirizzo di spedizione ── -->
+    <div class="form-section">
+      <div class="form-section-title">Indirizzo di spedizione</div>
+      <div class="field-grid">
+
+        <div class="form-group full">
+          <label for="indirizzo">Indirizzo e numero civico</label>
+          <input type="text" id="indirizzo" placeholder="Via Roma, 1" autocomplete="street-address" />
+        </div>
+
+        <div class="form-group">
+          <label for="cap">CAP</label>
+          <input type="text" id="cap" placeholder="00100" maxlength="5" autocomplete="postal-code" />
+        </div>
+
+        <div class="form-group">
+          <label for="citta">Città</label>
+          <input type="text" id="citta" placeholder="Roma" autocomplete="address-level2" />
+        </div>
+
+        <div class="form-group">
+          <label for="provincia">Provincia</label>
+          <input type="text" id="provincia" placeholder="RM" maxlength="2" autocomplete="address-level1" />
+        </div>
+
+        <div class="form-group">
+          <label for="frazione">Frazione <span class="optional">(opzionale)</span></label>
+          <input type="text" id="frazione" placeholder="Es. Ostia" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Preferenze e consenso ── -->
+    <div class="form-section">
+      <div class="form-section-title">Preferenze e consenso</div>
+
+      <div class="consent-row">
+        <label class="ios-checkbox">
+          <input type="checkbox" id="privacy" />
+          <div class="checkbox-wrapper">
+            <div class="checkbox-bg"></div>
+            <svg class="checkbox-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline class="check-path" points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </label>
+        <p class="consent-text">
+          Ho letto e accetto la <a href="#" style="color:var(--clr-accent);text-decoration:none;font-weight:600;">privacy policy</a> e le <a href="#" style="color:var(--clr-accent);text-decoration:none;font-weight:600;">condizioni generali</a>.<span class="required">*</span>
+        </p>
+      </div>
+
+      <div class="consent-row">
+        <label class="ios-checkbox">
+          <input type="checkbox" id="marketing" />
+          <div class="checkbox-wrapper">
+            <div class="checkbox-bg"></div>
+            <svg class="checkbox-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline class="check-path" points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </label>
+        <p class="consent-text">Desidero ricevere offerte esclusive e novità via email.</p>
+      </div>
+
+      <p class="gdpr-note">
+        I tuoi dati sono trattati in conformità al Regolamento UE 2016/679 (GDPR) e al D.Lgs. 196/2003.
+        <a href="#">Scopri di più sulla gestione dei tuoi dati e dei tuoi diritti.</a>
+      </p>
+    </div>
+
+    <button class="btn-submit" type="button">Crea account</button>
+
+    <p class="auth-footer" style="margin-top:16px;">
+      Hai già un account? <a href="login.html">Accedi</a>
+    </p>
+
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+  /* Password toggle */
+  function togglePw(btn, id) {
+    const input   = btn.closest('.input-wrap').querySelector('input');
+    const visible = input.type === 'password';
+    input.type = visible ? 'text' : 'password';
+    document.getElementById(id + '-hide').style.display = visible ? 'none' : '';
+    document.getElementById(id + '-show').style.display = visible ? ''     : 'none';
+    btn.setAttribute('aria-label', visible ? 'Nascondi password' : 'Mostra password');
+  }
+
+  /* Switch tipo account */
+  function setType(type) {
+    document.getElementById('opt-privato').classList.toggle('active', type === 'privato');
+    document.getElementById('opt-azienda').classList.toggle('active', type === 'azienda');
+    document.getElementById('company-fields').classList.toggle('visible', type === 'azienda');
+  }
+</script>
+
+</body>
+</html>

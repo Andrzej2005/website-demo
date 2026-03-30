@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accedi · TechStore</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css2?f[]=noorda@400,500,600,700&display=swap" rel="stylesheet" />
+  <style>
+
+    /* ═══════════════════════════════════════════════
+       RESET & VARIABILI
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --clr-accent:     #0058a3;
+      --clr-accent-hov: #004080;
+      --clr-text:       #1a1a2e;
+      --clr-muted:      #6b7280;
+      --clr-border:     #e2e5ea;
+      --font:           'Noorda', sans-serif;
+      --radius:         8px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+    }
+
+    /* ═══════════════════════════════════════════════
+       LAYOUT SPLIT
+    ═══════════════════════════════════════════════ */
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100dvh;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PANNELLO SINISTRO
+    ═══════════════════════════════════════════════ */
+    .panel-left {
+      background: var(--clr-accent);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Cerchi decorativi */
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      width: 520px; height: 520px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      top: -140px; right: -150px;
+    }
+    .panel-left::after {
+      content: '';
+      position: absolute;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      bottom: -80px; left: -90px;
+    }
+
+    .panel-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-copy { position: relative; z-index: 1; }
+
+    .panel-copy .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .panel-copy h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .panel-copy p {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      max-width: 320px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PANNELLO DESTRO
+    ═══════════════════════════════════════════════ */
+    .panel-right {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
+    }
+
+    .auth-form {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .auth-title {
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--clr-text);
+      margin-bottom: 6px;
+    }
+
+    .auth-subtitle {
+      font-size: 0.875rem;
+      color: var(--clr-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════
+       FORM
+    ═══════════════════════════════════════════════ */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--clr-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .link-blue {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--clr-accent);
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .link-blue:hover { opacity: 0.7; }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 11px 14px;
+      background: #fff;
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius);
+      color: var(--clr-text);
+      font-family: var(--font);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus {
+      border-color: var(--clr-accent);
+      box-shadow: 0 0 0 3px rgba(0,88,163,0.10);
+    }
+    input::placeholder { color: #c0c8d4; }
+
+    /* ═══════════════════════════════════════════════
+       PASSWORD TOGGLE
+    ═══════════════════════════════════════════════ */
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrap input { padding-right: 44px; }
+
+    .toggle-pw {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: #c0c8d4;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+      line-height: 0;
+    }
+    .toggle-pw:hover { color: var(--clr-muted); }
+
+    /* ═══════════════════════════════════════════════
+       BOTTONE SUBMIT
+    ═══════════════════════════════════════════════ */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: var(--clr-accent);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-submit:hover  { background: var(--clr-accent-hov); }
+    .btn-submit:active { transform: scale(0.99); }
+
+    /* ═══════════════════════════════════════════════
+       NOTE A PIÈ FORM
+    ═══════════════════════════════════════════════ */
+    .auth-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--clr-muted);
+    }
+    .auth-footer a {
+      color: var(--clr-accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .auth-footer a:hover { opacity: 0.7; }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 680px) {
+      .page { grid-template-columns: 1fr; }
+      .panel-left { display: none; }
+      .panel-right { padding: 48px 24px; align-items: flex-start; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ═══════════════════════════════════════════════
+         PANNELLO SINISTRO
+    ═══════════════════════════════════════════════ -->
+    <div class="panel-left">
+      <a href="index.html" class="panel-brand">
+        <svg width="22" height="22" viewBox="0 0 16 16" fill="#fff"><circle cx="8" cy="8" r="8"/></svg>
+        TechStore
+      </a>
+      <div class="panel-copy">
+        <div class="badge">
+          <svg width="7" height="7" viewBox="0 0 8 8" fill="#fff"><circle cx="4" cy="4" r="4"/></svg>
+          Hardware professionale
+        </div>
+        <h2>Router, Switch<br/>e molto altro.</h2>
+        <p>Accedi per gestire i tuoi ordini, salvare i preferiti e accedere alle offerte riservate ai clienti registrati.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         PANNELLO DESTRO — FORM
+    ═══════════════════════════════════════════════ -->
+    <div class="panel-right">
+      <div class="auth-form">
+
+        <h1 class="auth-title">Accedi</h1>
+        <p class="auth-subtitle">Bentornato. Inserisci le tue credenziali.</p>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="nome@esempio.com" autocomplete="email" />
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="form-group-header">
+            <label for="password">Password</label>
+            <a href="#" class="link-blue">Password dimenticata?</a>
+          </div>
+          <div class="input-wrap">
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+            <button class="toggle-pw" type="button" aria-label="Mostra password" onclick="togglePw(this)">
+              <svg id="icon-hide" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+              </svg>
+              <svg id="icon-show" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="display:none">
+                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-submit" type="button">Sign in</button>
+
+        <p class="auth-footer">
+          Non hai un account? <a href="register.html">Crea un account</a>
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCRIPT
+  ═══════════════════════════════════════════════ -->
+  <script>
+    function togglePw(btn) {
+      const input   = btn.closest('.input-wrap').querySelector('input');
+      const visible = input.type === 'password';
+      input.type = visible ? 'text' : 'password';
+      btn.querySelector('#icon-hide').style.display = visible ? 'none' : '';
+      btn.querySelector('#icon-show').style.display = visible ? ''     : 'none';
+      btn.setAttribute('aria-label', visible ? 'Nascondi password' : 'Mostra password');
+    }
+  </script>
+
+</body>
+</html>
