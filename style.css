@@ -105,8 +105,8 @@ body.dark-theme .navbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   color: var(--clr-muted);
   text-decoration: none;
@@ -211,71 +211,6 @@ body.dark-theme .inputBox_container.focused {
 
 body.dark-theme .inputBox_container.focused .search_icon {
   fill: #ffffff;
-}
-
-/* =========================================
-   REGOLAZIONE UNIFORME CAPSULE (TUTTE LE VERSIONI)
-========================================= */
-.nav-links-bar {
-  background-color: transparent; 
-  padding: 16px 48px;
-}
-
-.nav-scroll-list {
-  display: flex;
-  align-items: center; /* Allineamento verticale perfetto dei nodi */
-  list-style: none;
-  gap: 12px;
-  overflow-x: auto;
-  white-space: nowrap;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  padding: 4px 0;
-}
-
-.nav-scroll-list::-webkit-scrollbar {
-  display: none;
-}
-
-.nav-scroll-list li {
-  display: flex;
-  align-items: center; /* Forza i contenitori ad allinearsi sulla stessa linea */
-}
-
-.capsule-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 34px; /* Altezza fissa identica per tutte le capsule: addio altezze storte! */
-  padding: 0 14px; /* Padding solo orizzontale per gestire la lunghezza del testo */
-  box-sizing: border-box;
-  border: 1px solid var(--clr-border);
-  border-radius: 0.4em; 
-  text-decoration: none;
-  color: var(--clr-text);
-  font-size: 0.8rem;
-  font-weight: 600;
-  line-height: 1; /* Impedisce al testo di sfasare l'altezza interna */
-  background-color: transparent;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-/* Bilanciamento di icone ed emoji nelle capsule */
-.capsule-link svg, 
-.capsule-link span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  flex-shrink: 0;
-}
-
-.capsule-link:hover {
-  border-color: var(--clr-accent);
-  background-color: var(--clr-accent-lt);
-  color: var(--clr-accent);
 }
 
 /* =========================================
@@ -437,15 +372,22 @@ body.dark-theme .carousel-slide {
 .slide-price {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--clr-accent);
+  color: #000000 !important;
+}
+
+body.dark-theme .slide-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff !important;
 }
 
 .slide-price span {
   font-size: 0.8rem;
   font-weight: 400;
-  color: var(--clr-muted);
+  color: var(--clr-muted) !important;
   margin-left: 4px;
 }
+
 
 .slide-actions {
   display: flex;
@@ -513,15 +455,6 @@ body.dark-theme .slide-visual {
   align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 28px;
-}
-
-.section-eyebrow {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--clr-accent);
-  margin-bottom: 6px;
 }
 
 .section-title {
@@ -700,7 +633,7 @@ body.dark-theme footer {
   padding: 12px 16px;
   border: 1px solid var(--clr-border);
   border-right: none;
-  border-radius: 8px 0 0 8px;
+  border-radius: 4px 0 0 4px;
   background-color: var(--clr-white);
   color: var(--clr-text);
   outline: none;
@@ -716,7 +649,7 @@ body.dark-theme .newsletter-form input {
   background-color: var(--clr-accent);
   color: #ffffff;
   font-weight: 700;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 4px 4px 0;
   cursor: pointer;
   transition: background-color 0.15s;
 }
@@ -786,39 +719,62 @@ body.dark-theme .newsletter-form input {
 }
 
 @media(max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 14px 16px;
-    justify-content: space-between;
+  /* Riduciamo il padding laterale da 72px a 16px per dare respiro al testo */
+  .section {
+    padding: 40px 16px;
   }
   
-  .nav-left { 
-    flex: 0 0 auto;
-    order: 1; 
+  /* Impiliamo in verticale testo e bottone nel banner, centrandoli */
+  .banner-strip {
+    padding: 32px 16px;
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
   }
   
-  .nav-right { 
-    flex: 0 0 auto;
-    order: 2; 
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    flex-shrink: 0; /* Impedisce al blocco delle icone di essere compresso */
+  footer {
+    padding: 48px 24px 24px;
   }
-  
-  .nav-icon-btn {
-    flex-shrink: 0; /* Forza il carrello e le altre icone a non ridursi mai a zero pixel */
+
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 32px;
   }
-  
-  .nav-center {
-    flex: 0 0 100%;
-    width: 100%;
-    margin-top: 14px;
-    order: 3;
-    display: flex;
+
+  .footer-col {
+    text-align: center;
+  }
+
+  .footer-col ul {
+    align-items: center;
+  }
+
+  .footer-newsletter-col {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--clr-border);
+    padding-top: 32px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .newsletter-form {
+    margin: 6px auto 0;
     justify-content: center;
-    box-sizing: border-box;
+  }
+
+  .footer-social-links {
+    justify-content: center;
+  }
+
+  .footer-bottom {
+    text-align: center;
+    align-items: center;
+  }
+
+  .footer-bottom-links {
+    justify-content: center;
   }
   
   /* RIMOZIONE OVERFLOW: Costringe il modulo di ricerca di searchbar.css a stare nello schermo */
