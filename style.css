@@ -718,22 +718,28 @@ body.dark-theme .newsletter-form input {
   }
 }
 
-@media(max-width: 768px) {
-  /* Riduciamo il padding laterale da 72px a 16px per dare respiro al testo */
+@media (max-width: 768px) {
+  /* 1. Toglie l'enorme spazio laterale da "Esplora le categorie" */
   .section {
-    padding: 40px 16px;
+    padding: 40px 16px !important; 
+  }
+  
+  /* Centra in verticale il titolo e il link "Vedi tutto" */
+  .section-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 16px !important;
   }
   
   /* Impiliamo in verticale testo e bottone nel banner, centrandoli */
   .banner-strip {
-    padding: 32px 16px;
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
+    padding: 40px 16px !important;
   }
-  
+
+  /* 3. Allarga il footer dando più respiro ai link */
   footer {
-    padding: 48px 24px 24px;
+    padding: 48px 16px 24px !important;
   }
 
   .footer-container {
@@ -828,7 +834,8 @@ body.dark-theme .newsletter-form input {
 }
 
 @media(max-width: 420px) {
-  .footer-links-grid {
-    grid-template-columns: 1fr;
+  .section, .banner-strip, footer {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
 }
