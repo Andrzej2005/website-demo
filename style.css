@@ -375,6 +375,7 @@ body.dark-theme .carousel-slide {
   color: #000000 !important;
 }
 
+
 body.dark-theme .slide-price {
   font-size: 1.4rem;
   font-weight: 700;
@@ -718,69 +719,40 @@ body.dark-theme .newsletter-form input {
   }
 }
 
-@media (max-width: 768px) {
-  /* 1. Toglie l'enorme spazio laterale da "Esplora le categorie" */
-  .section {
-    padding: 40px 16px !important; 
+@media(max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 14px 16px;
+    justify-content: space-between;
   }
   
-  /* Centra in verticale il titolo e il link "Vedi tutto" */
-  .section-header {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 16px !important;
+  .nav-left { 
+    flex: 0 0 auto;
+    order: 1; 
   }
   
-  /* Impiliamo in verticale testo e bottone nel banner, centrandoli */
-  .banner-strip {
-    padding: 40px 16px !important;
+  .nav-right { 
+    flex: 0 0 auto;
+    order: 2; 
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0; /* Impedisce al blocco delle icone di essere compresso */
   }
-
-  /* 3. Allarga il footer dando più respiro ai link */
-  footer {
-    padding: 48px 16px 24px !important;
+  
+  .nav-icon-btn {
+    flex-shrink: 0; /* Forza il carrello e le altre icone a non ridursi mai a zero pixel */
   }
-
-  .footer-container {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 32px;
-  }
-
-  .footer-col {
-    text-align: center;
-  }
-
-  .footer-col ul {
-    align-items: center;
-  }
-
-  .footer-newsletter-col {
-    padding-left: 0;
-    border-left: none;
-    border-top: 1px solid var(--clr-border);
-    padding-top: 32px;
-    align-items: center;
-    text-align: center;
-  }
-
-  .newsletter-form {
-    margin: 6px auto 0;
+  
+  .nav-center {
+    flex: 0 0 100%;
+    width: 100%;
+    margin-top: 14px;
+    order: 3;
+    display: flex;
     justify-content: center;
-  }
-
-  .footer-social-links {
-    justify-content: center;
-  }
-
-  .footer-bottom {
-    text-align: center;
-    align-items: center;
-  }
-
-  .footer-bottom-links {
-    justify-content: center;
+    box-sizing: border-box;
   }
   
   /* RIMOZIONE OVERFLOW: Costringe il modulo di ricerca di searchbar.css a stare nello schermo */
@@ -834,8 +806,7 @@ body.dark-theme .newsletter-form input {
 }
 
 @media(max-width: 420px) {
-  .section, .banner-strip, footer {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+  .footer-links-grid {
+    grid-template-columns: 1fr;
   }
 }
