@@ -719,51 +719,41 @@ body.dark-theme .newsletter-form input {
   }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .navbar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 14px 16px;
-    justify-content: space-between;
-  }
-  
-  .nav-left { 
-    flex: 0 0 auto;
-    order: 1; 
-  }
-  
-  .nav-right { 
-    flex: 0 0 auto;
-    order: 2; 
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    flex-shrink: 0; /* Impedisce al blocco delle icone di essere compresso */
+    flex-wrap: wrap;       /* IMPORTANTE: Permette agli elementi di andare a capo su più righe */
+    height: auto;          /* IMPORTANTE: Rimuove l'altezza fissa di 60px per espandersi in verticale */
+    padding: 12px 16px;    /* Riduce il padding laterale per adattarsi agli schermi piccoli */
   }
-  
-  .nav-icon-btn {
-    flex-shrink: 0; /* Forza il carrello e le altre icone a non ridursi mai a zero pixel */
+
+  .nav-left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start; /* Spinge il logo completamente a sinistra */
   }
-  
+
+  .nav-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;   /* Spinge le icone completamente a destra */
+    gap: 8px;                    /* Spazio uniforme tra i pulsanti delle icone */
+  }
+
   .nav-center {
-    flex: 0 0 100%;
+    flex: 0 0 100%;              /* Costringe la barra di ricerca a occupare il 100% della larghezza */
     width: 100%;
-    margin-top: 14px;
-    order: 3;
+    order: 3;                    /* Posiziona la barra visivamente sotto a logo e icone */
+    margin-top: 12px;            /* Crea uno spazio verticale tra la prima riga e la barra di ricerca */
     display: flex;
     justify-content: center;
     box-sizing: border-box;
   }
-  
-  /* RIMOZIONE OVERFLOW: Costringe il modulo di ricerca di searchbar.css a stare nello schermo */
+
   .inputBox_container {
-    width: 100% !important;
+    width: 100% !important;      /* Assicura che il modulo di ricerca si estenda al massimo */
     max-width: 100% !important;
-    box-sizing: border-box; /* Include padding e bordi nel calcolo della larghezza totale */
-  }
-  
-  .nav-links-bar {
-    padding: 12px 16px;
+    box-sizing: border-box;
   }
 }
 
