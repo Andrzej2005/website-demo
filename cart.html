@@ -1,27 +1,528 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carrello · TechStore</title>
-  <link rel="preconnect" href="https://api.fontshare.com"/>
-  <link href="https://api.fontshare.com/v2/css2?f[]=noorda@400,500,600,700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="cart.css"/>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css2?f[]=noorda@400,500,600,700&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════
+       RESET & VARIABILI
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --clr-accent:             #0058a3;
+      --clr-accent-hov:         #004080;
+      --clr-bg:                 #f5f6f8; /* Leggero grigio per far risaltare le card nel tema chiaro */
+      --clr-surface:            #ffffff;
+      --clr-text:               #1a1a2e;
+      --clr-muted:              #6b7280;
+      --clr-border:             #e2e5ea;
+      
+      --clr-input-bg:           #f0f2f5;
+      --clr-input-focus-border: #0058a3;
+      
+      /* Stati Prodotto */
+      --clr-status-avail:       #16a34a; /* Disponibile */
+      --clr-status-order:       #d97706; /* Ordinabile */
+      --clr-status-unavail:     #dc2626; /* Non disponibile */
+
+      --font:                   'Noorda', sans-serif;
+      --radius:                 12px;
+      --radius-sm:              8px;
+    }
+
+    body.dark-theme {
+      --clr-bg:                 #0a0a0a;
+      --clr-surface:            #121212;
+      --clr-text:               #ffffff;
+      --clr-muted:              #a0a0a0;
+      --clr-border:             #222222;
+      
+      --clr-input-bg:           #222222;
+      --clr-input-focus-border: #555555;
+      
+      --clr-status-avail:       #22c55e;
+      --clr-status-order:       #fbbf24;
+      --clr-status-unavail:     #ef4444;
+    }
+
+    html, body { 
+      font-family: var(--font); 
+      background: var(--clr-bg); 
+      color: var(--clr-text); 
+      transition: background-color 0.3s, color 0.3s;
+      min-height: 100dvh;
+    }
+
+    /* ═══════════════════════════════════════════════
+       LAYOUT PAGINA
+    ═══════════════════════════════════════════════ */
+    .page-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ═══════════════════════════════════════════════
+       LISTA PRODOTTI (SINISTRA)
+    ═══════════════════════════════════════════════ */
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cart-item {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      gap: 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cart-item:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border-color: var(--clr-input-focus-border);
+    }
+
+    .item-img {
+      width: 140px;
+      height: 140px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      background-color: var(--clr-input-bg);
+      flex-shrink: 0;
+    }
+
+    .item-details {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .item-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--clr-text);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .item-sku {
+      font-size: 0.85rem;
+      color: var(--clr-muted);
+      margin-bottom: 12px;
+    }
+
+    .item-total-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--clr-accent);
+    }
+
+    .item-unit-price {
+      font-size: 0.85rem;
+      color: var(--clr-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Controlli Quantità */
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .qty-selector {
+      display: flex;
+      align-items: center;
+      background-color: var(--clr-input-bg);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .qty-selector:focus-within { border-color: var(--clr-accent); }
+
+    .qty-btn {
+      background: transparent;
+      border: none;
+      color: var(--clr-text);
+      font-size: 1.2rem;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+      transition: background 0.15s;
+    }
+    .qty-btn:hover { background: rgba(0,0,0,0.05); }
+    body.dark-theme .qty-btn:hover { background: rgba(255,255,255,0.05); }
+
+    .qty-input {
+      width: 40px;
+      height: 36px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      color: var(--clr-text);
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 600;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Stati Prodotto */
+    .item-status {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .item-status::before {
+      content: '';
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    
+    .status-disponibile { color: var(--clr-status-avail); }
+    .status-disponibile::before { background-color: var(--clr-status-avail); }
+    
+    .status-ordinabile { color: var(--clr-status-order); }
+    .status-ordinabile::before { background-color: var(--clr-status-order); }
+    
+    .status-non_disponibile { color: var(--clr-status-unavail); }
+    .status-non_disponibile::before { background-color: var(--clr-status-unavail); }
+
+    /* Stato Vuoto */
+    .empty-cart {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--clr-surface);
+      border-radius: var(--radius);
+      border: 1px dashed var(--clr-border);
+      color: var(--clr-muted);
+    }
+    .empty-cart h2 { color: var(--clr-text); margin-bottom: 8px; }
+
+    /* ═══════════════════════════════════════════════
+       RIEPILOGO ORDINE (DESTRA)
+    ═══════════════════════════════════════════════ */
+    .cart-summary {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .cart-summary h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--clr-border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      color: var(--clr-text);
+      font-weight: 500;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--clr-border);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--clr-text);
+    }
+    .summary-total small {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--clr-muted);
+      margin-top: 4px;
+    }
+
+    .btn-submit {
+      display: block; width: 100%; padding: 16px; margin-top: 24px;
+      background: var(--clr-accent); border: none; border-radius: var(--radius-sm);
+      color: #fff; font-family: var(--font); font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background 0.15s, transform 0.1s, opacity 0.2s;
+    }
+    .btn-submit:hover:not(:disabled)  { background: var(--clr-accent-hov); }
+    .btn-submit:active:not(:disabled) { transform: scale(0.99); }
+    
+    /* Stato disabilitato per il bottone */
+    .btn-submit:disabled {
+      background: var(--clr-muted);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    
+    .checkout-warning {
+      color: var(--clr-status-unavail);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 860px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+    }
+    
+    @media (max-width: 480px) {
+      .cart-item { flex-direction: column; gap: 16px; align-items: center; text-align: center; }
+      .item-actions { justify-content: center; flex-direction: column; gap: 12px; }
+    }
+  </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="nav-left">
-      <a href="index.html" class="nav-logo">
-        <svg width="20" height="20" viewBox="0 0 16 16" fill="#000000"><path d="m.334 0 4.358 4.359h7.15v7.15l4.358 4.358V0zM.2 9.72l4.487-4.488v6.281h6.28L6.48 16H.2z"/></svg>
-      </a>
-    </div>
-  </nav>
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+  </script>
 
-  <div class="page">
-    <div id="cartRoot"></div>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Carrello</h1>
+    </div>
+
+    <div class="cart-layout">
+      <div class="cart-items" id="cart-container">
+        </div>
+
+      <div class="cart-summary">
+        <h3>Riepilogo Ordine</h3>
+        <div class="summary-row">
+          <span>Subtotale</span>
+          <span id="summary-subtotal">€ 0,00</span>
+        </div>
+        <div class="summary-row">
+          <span>Spedizione</span>
+          <span id="summary-shipping">€ 0,00</span>
+        </div>
+        <div class="summary-total">
+          <span>Totale <small>IVA inclusa</small></span>
+          <span id="summary-total">€ 0,00</span>
+        </div>
+        <button id="checkout-btn" class="btn-submit">Procedi al checkout</button>
+        <div id="checkout-warning" class="checkout-warning">Rimuovi i prodotti non disponibili per proseguire.</div>
+      </div>
+    </div>
   </div>
 
-  <script src="cart.js"></script>
+  <script>
+    /* ═══════════════════════════════════════════════
+       DATI DEL CARRELLO (MOCKUP)
+    ═══════════════════════════════════════════════ */
+    let cart = [
+      {
+        id: 1,
+        name: "Cuffie Wireless Noise Cancelling",
+        sku: "SKU: AUD-CW-001",
+        price: 149.90,
+        qty: 1,
+        status: "disponibile", 
+        img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop"
+      },
+      {
+        id: 2,
+        name: "Tastiera Meccanica RGB",
+        sku: "SKU: PER-TM-992",
+        price: 89.50,
+        qty: 2,
+        status: "ordinabile",
+        img: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&h=300&fit=crop"
+      },
+      {
+        id: 3,
+        name: "Monitor 4K 27\" IPS",
+        sku: "SKU: DIS-4K-27",
+        price: 349.00,
+        qty: 1,
+        status: "non_disponibile",
+        img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&h=300&fit=crop"
+      }
+    ];
+
+    const shippingCost = 5.99; // Costo fisso di spedizione (può essere reso dinamico)
+    const statusLabels = {
+      disponibile: "Disponibile",
+      ordinabile: "Ordinabile",
+      non_disponibile: "Non disponibile"
+    };
+
+    /* ═══════════════════════════════════════════════
+       FUNZIONI DI FORMATTAZIONE E LOGICA
+    ═══════════════════════════════════════════════ */
+    
+    // Formattatore di valuta Euro
+    const formatEUR = (amount) => {
+      return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(amount);
+    };
+
+    // Rendering principale del carrello
+    function renderCart() {
+      const container = document.getElementById('cart-container');
+      container.innerHTML = '';
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart">
+            <h2>Il tuo carrello è vuoto</h2>
+            <p>Non hai ancora aggiunto nessun prodotto.</p>
+          </div>
+        `;
+        updateSummary();
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        
+        // Costruzione HTML della card
+        const cardHTML = `
+          <div class="cart-item">
+            <img src="${item.img}" alt="${item.name}" class="item-img" />
+            <div class="item-details">
+              <div class="item-name">${item.name}</div>
+              <div class="item-sku">${item.sku}</div>
+              
+              <div class="item-total-price">${formatEUR(itemTotal)}</div>
+              <div class="item-unit-price">${formatEUR(item.price)} cad.</div>
+              
+              <div class="item-actions">
+                <div class="qty-selector">
+                  <button class="qty-btn" onclick="updateQty(${index}, -1)" aria-label="Riduci quantità">-</button>
+                  <input type="number" class="qty-input" value="${item.qty}" min="0" onchange="setQty(${index}, this.value)" />
+                  <button class="qty-btn" onclick="updateQty(${index}, 1)" aria-label="Aumenta quantità">+</button>
+                </div>
+              </div>
+              
+              <div class="item-status status-${item.status}">
+                ${statusLabels[item.status]}
+              </div>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', cardHTML);
+      });
+
+      updateSummary();
+    }
+
+    // Modifica quantità con i bottoni (+ e -)
+    function updateQty(index, change) {
+      const newQty = cart[index].qty + change;
+      if (newQty <= 0) {
+        cart.splice(index, 1); // Rimuove dal carrello se arriva a 0
+      } else {
+        cart[index].qty = newQty;
+      }
+      renderCart();
+    }
+
+    // Imposta quantità scrivendo direttamente nell'input
+    function setQty(index, value) {
+      const newQty = parseInt(value, 10);
+      if (isNaN(newQty) || newQty <= 0) {
+        cart.splice(index, 1);
+      } else {
+        cart[index].qty = newQty;
+      }
+      renderCart();
+    }
+
+    // Aggiorna Riepilogo e stato bottone Checkout
+    function updateSummary() {
+      const subtotalEl = document.getElementById('summary-subtotal');
+      const shippingEl = document.getElementById('summary-shipping');
+      const totalEl = document.getElementById('summary-total');
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const warningMsg = document.getElementById('checkout-warning');
+
+      // Calcolo subtotale
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      
+      // Controllo se ci sono articoli non disponibili
+      const hasUnavailable = cart.some(item => item.status === 'non_disponibile');
+      const isCartEmpty = cart.length === 0;
+
+      // Aggiornamento interfaccia riepilogo
+      subtotalEl.textContent = formatEUR(subtotal);
+      
+      if (isCartEmpty) {
+        shippingEl.textContent = formatEUR(0);
+        totalEl.textContent = formatEUR(0);
+        checkoutBtn.disabled = true;
+        warningMsg.style.display = 'none';
+      } else {
+        shippingEl.textContent = formatEUR(shippingCost);
+        totalEl.textContent = formatEUR(subtotal + shippingCost);
+        
+        // Logica per disabilitare il bottone se un prodotto è Non Disponibile
+        if (hasUnavailable) {
+          checkoutBtn.disabled = true;
+          warningMsg.style.display = 'block';
+        } else {
+          checkoutBtn.disabled = false;
+          warningMsg.style.display = 'none';
+        }
+      }
+    }
+
+    // Inizializzazione al caricamento
+    document.addEventListener('DOMContentLoaded', renderCart);
+
+  </script>
 </body>
 </html>
