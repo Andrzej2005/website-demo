@@ -15,29 +15,32 @@
     :root {
       --clr-accent:             #0058a3;
       --clr-accent-hov:         #004080;
-      --clr-bg:                 #f5f6f8; /* Leggero grigio per far risaltare le card nel tema chiaro */
+      --clr-bg:                 #f5f6f8; 
       --clr-surface:            #ffffff;
       --clr-text:               #1a1a2e;
+      --clr-price:              #000000; 
       --clr-muted:              #6b7280;
       --clr-border:             #e2e5ea;
       
       --clr-input-bg:           #f0f2f5;
       --clr-input-focus-border: #0058a3;
       
-      /* Stati Prodotto */
-      --clr-status-avail:       #16a34a; /* Disponibile */
-      --clr-status-order:       #d97706; /* Ordinabile */
-      --clr-status-unavail:     #dc2626; /* Non disponibile */
+      /* Stati Prodotto e Azioni */
+      --clr-status-avail:       #16a34a; 
+      --clr-status-order:       #d97706; 
+      --clr-status-unavail:     #dc2626; 
+      --clr-danger-light:       rgba(220, 38, 38, 0.1);
 
       --font:                   'Noorda', sans-serif;
-      --radius:                 12px;
-      --radius-sm:              8px;
+      --radius:                 4px;
+      --radius-sm:              4px; 
     }
 
     body.dark-theme {
       --clr-bg:                 #0a0a0a;
       --clr-surface:            #121212;
       --clr-text:               #ffffff;
+      --clr-price:              #ffffff; 
       --clr-muted:              #a0a0a0;
       --clr-border:             #222222;
       
@@ -47,6 +50,7 @@
       --clr-status-avail:       #22c55e;
       --clr-status-order:       #fbbf24;
       --clr-status-unavail:     #ef4444;
+      --clr-danger-light:       rgba(239, 68, 68, 0.15);
     }
 
     html, body { 
@@ -64,6 +68,9 @@
       max-width: 1100px;
       margin: 0 auto;
       padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100dvh - 80px);
     }
 
     .page-header {
@@ -81,6 +88,7 @@
       grid-template-columns: 1fr 380px;
       gap: 32px;
       align-items: start;
+      flex-grow: 1;
     }
 
     /* ═══════════════════════════════════════════════
@@ -98,95 +106,133 @@
       border-radius: var(--radius);
       padding: 20px;
       display: flex;
-      gap: 24px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      gap: 20px;
+      position: relative; 
+      transition: border-color 0.2s;
     }
 
     .cart-item:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
       border-color: var(--clr-input-focus-border);
     }
 
     .item-img {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       border-radius: var(--radius-sm);
       object-fit: cover;
       background-color: var(--clr-input-bg);
       flex-shrink: 0;
+      cursor: pointer;
     }
 
     .item-details {
       display: flex;
       flex-direction: column;
+      justify-content: space-between; 
       flex: 1;
-      justify-content: center;
+      min-height: 130px; 
     }
 
-    .item-name {
+    .item-info-top {
+      padding-right: 40px; 
+    }
+
+    .item-name-link {
+      display: inline-block;
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--clr-text);
       line-height: 1.2;
       margin-bottom: 4px;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .item-name-link:hover {
+      color: var(--clr-accent);
+      text-decoration: underline;
     }
 
     .item-sku {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--clr-muted);
+      margin-bottom: 6px;
+    }
+
+    .item-status {
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       margin-bottom: 12px;
+    }
+    .item-status::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .status-disponibile { color: var(--clr-status-avail); }
+    .status-disponibile::before { background-color: var(--clr-status-avail); }
+    .status-ordinabile { color: var(--clr-status-order); }
+    .status-ordinabile::before { background-color: var(--clr-status-order); }
+    .status-non_disponibile { color: var(--clr-status-unavail); }
+    .status-non_disponibile::before { background-color: var(--clr-status-unavail); }
+
+    .item-info-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end; 
     }
 
     .item-total-price {
-      font-size: 1.25rem;
+      font-size: 1.4rem; 
       font-weight: 700;
-      color: var(--clr-accent);
+      color: var(--clr-price); 
+      line-height: 1.1;
     }
 
     .item-unit-price {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--clr-muted);
-      margin-bottom: 16px;
+      margin-top: 2px;
     }
 
-    /* Controlli Quantità */
-    .item-actions {
+    /* Input Quantità personalizzato e pulito */
+    .qty-wrapper {
       display: flex;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .qty-selector {
-      display: flex;
-      align-items: center;
-      background-color: var(--clr-input-bg);
+      background-color: var(--clr-surface);
+      border: 1px solid var(--clr-border);
       border-radius: var(--radius-sm);
       overflow: hidden;
-      border: 2px solid transparent;
       transition: border-color 0.2s;
     }
-    .qty-selector:focus-within { border-color: var(--clr-accent); }
+    
+    .qty-wrapper:focus-within {
+      border-color: var(--clr-accent);
+    }
 
     .qty-btn {
-      background: transparent;
+      background: var(--clr-input-bg);
       border: none;
       color: var(--clr-text);
+      width: 34px;
+      height: 34px;
       font-size: 1.2rem;
-      width: 36px;
-      height: 36px;
       cursor: pointer;
-      display: grid;
-      place-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: background 0.15s;
     }
     .qty-btn:hover { background: rgba(0,0,0,0.05); }
     body.dark-theme .qty-btn:hover { background: rgba(255,255,255,0.05); }
 
-    .qty-input {
-      width: 40px;
-      height: 36px;
+    .qty-native-input {
+      width: 44px;
+      height: 34px;
       text-align: center;
       border: none;
       background: transparent;
@@ -195,49 +241,84 @@
       font-size: 1rem;
       font-weight: 600;
       outline: none;
-      -moz-appearance: textfield;
+      -moz-appearance: textfield; /* Nasconde le frecce su Firefox */
     }
-    .qty-input::-webkit-outer-spin-button,
-    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    
+    /* Nasconde le frecce native su Chrome/Safari/Edge */
+    .qty-native-input::-webkit-outer-spin-button,
+    .qty-native-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
-    /* Stati Prodotto */
-    .item-status {
-      font-size: 0.85rem;
-      font-weight: 600;
+    /* Pulsante elimina: Icona cestino, niente movimento al passaggio */
+    .btn-delete {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--clr-danger-light);
+      border: none;
+      color: var(--clr-status-unavail);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      padding: 8px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
     }
-    .item-status::before {
-      content: '';
-      display: block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    .btn-delete:hover {
+      background: var(--clr-status-unavail);
+      color: #ffffff;
     }
-    
-    .status-disponibile { color: var(--clr-status-avail); }
-    .status-disponibile::before { background-color: var(--clr-status-avail); }
-    
-    .status-ordinabile { color: var(--clr-status-order); }
-    .status-ordinabile::before { background-color: var(--clr-status-order); }
-    
-    .status-non_disponibile { color: var(--clr-status-unavail); }
-    .status-non_disponibile::before { background-color: var(--clr-status-unavail); }
-
-    /* Stato Vuoto */
-    .empty-cart {
-      text-align: center;
-      padding: 60px 20px;
-      background: var(--clr-surface);
-      border-radius: var(--radius);
-      border: 1px dashed var(--clr-border);
-      color: var(--clr-muted);
-    }
-    .empty-cart h2 { color: var(--clr-text); margin-bottom: 8px; }
 
     /* ═══════════════════════════════════════════════
-       RIEPILOGO ORDINE (DESTRA)
+       SCHERMATA CARRELLO VUOTO
+    ═══════════════════════════════════════════════ */
+    .empty-cart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-grow: 1; 
+      grid-column: 1 / -1; 
+      padding: 40px 20px;
+    }
+
+    .empty-cart-icon {
+      color: var(--clr-muted);
+      margin-bottom: 24px;
+      opacity: 0.5;
+    }
+
+    .empty-cart-container h2 { 
+      color: var(--clr-text); 
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 24px; 
+      letter-spacing: -0.02em;
+    }
+
+    .btn-explore {
+      display: inline-block;
+      padding: 14px 28px;
+      background: var(--clr-accent);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-explore:hover { background: var(--clr-accent-hov); }
+    .btn-explore:active { transform: scale(0.98); }
+
+    /* ═══════════════════════════════════════════════
+       RIEPILOGO ORDINE
     ═══════════════════════════════════════════════ */
     .cart-summary {
       background: var(--clr-surface);
@@ -288,16 +369,13 @@
       display: block; width: 100%; padding: 16px; margin-top: 24px;
       background: var(--clr-accent); border: none; border-radius: var(--radius-sm);
       color: #fff; font-family: var(--font); font-size: 1rem; font-weight: 700;
-      cursor: pointer; transition: background 0.15s, transform 0.1s, opacity 0.2s;
+      cursor: pointer; transition: background 0.15s, opacity 0.2s;
     }
     .btn-submit:hover:not(:disabled)  { background: var(--clr-accent-hov); }
-    .btn-submit:active:not(:disabled) { transform: scale(0.99); }
-    
-    /* Stato disabilitato per il bottone */
     .btn-submit:disabled {
       background: var(--clr-muted);
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.5;
     }
     
     .checkout-warning {
@@ -317,14 +395,46 @@
       .cart-summary { position: static; }
     }
     
-    @media (max-width: 480px) {
-      .cart-item { flex-direction: column; gap: 16px; align-items: center; text-align: center; }
-      .item-actions { justify-content: center; flex-direction: column; gap: 12px; }
+    @media (max-width: 560px) {
+      /* Mantiene l'allineamento orizzontale ma adatta gli spazi */
+      .cart-item { 
+        gap: 16px; 
+        padding: 16px; 
+      }
+      .item-img { 
+        width: 85px; 
+        height: 85px; 
+      }
+      .item-details { 
+        min-height: 85px; 
+      }
+      .item-info-top { 
+        padding-right: 32px; /* Spazio per il cestino */
+      }
+      .item-name-link { 
+        font-size: 1rem; 
+      }
+      
+      /* Impila prezzo e quantità sulla sinistra, NON centrati */
+      .item-info-bottom { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 12px; 
+        margin-top: 12px;
+      }
+      .qty-wrapper { 
+        align-self: flex-start; /* Mantiene il box selettore a sinistra */
+      }
+      .btn-delete { 
+        top: 12px; 
+        right: 12px; 
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Sincronizzazione Tema dal localStorage -->
   <script>
     if (localStorage.getItem('theme') === 'dark') {
       document.body.classList.add('dark-theme');
@@ -332,15 +442,18 @@
   </script>
 
   <div class="page-container">
-    <div class="page-header">
+    <div class="page-header" id="page-header">
       <h1>Carrello</h1>
     </div>
 
-    <div class="cart-layout">
+    <div class="cart-layout" id="main-layout">
+      <!-- Sezione Prodotti -->
       <div class="cart-items" id="cart-container">
-        </div>
+        <!-- Generato via JavaScript -->
+      </div>
 
-      <div class="cart-summary">
+      <!-- Sezione Riepilogo -->
+      <div class="cart-summary" id="summary-container">
         <h3>Riepilogo Ordine</h3>
         <div class="summary-row">
           <span>Subtotale</span>
@@ -361,14 +474,12 @@
   </div>
 
   <script>
-    /* ═══════════════════════════════════════════════
-       DATI DEL CARRELLO (MOCKUP)
-    ═══════════════════════════════════════════════ */
+    // Dati fittizi
     let cart = [
       {
         id: 1,
         name: "Cuffie Wireless Noise Cancelling",
-        sku: "SKU: AUD-CW-001",
+        sku: "KUD: AUD-CW-001",
         price: 149.90,
         qty: 1,
         status: "disponibile", 
@@ -377,7 +488,7 @@
       {
         id: 2,
         name: "Tastiera Meccanica RGB",
-        sku: "SKU: PER-TM-992",
+        sku: "KUD: PER-TM-992",
         price: 89.50,
         qty: 2,
         status: "ordinabile",
@@ -386,7 +497,7 @@
       {
         id: 3,
         name: "Monitor 4K 27\" IPS",
-        sku: "SKU: DIS-4K-27",
+        sku: "KUD: DIS-4K-27",
         price: 349.00,
         qty: 1,
         status: "non_disponibile",
@@ -394,62 +505,81 @@
       }
     ];
 
-    const shippingCost = 5.99; // Costo fisso di spedizione (può essere reso dinamico)
+    const shippingCost = 5.99;
     const statusLabels = {
       disponibile: "Disponibile",
       ordinabile: "Ordinabile",
       non_disponibile: "Non disponibile"
     };
 
-    /* ═══════════════════════════════════════════════
-       FUNZIONI DI FORMATTAZIONE E LOGICA
-    ═══════════════════════════════════════════════ */
-    
-    // Formattatore di valuta Euro
     const formatEUR = (amount) => {
       return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(amount);
     };
 
-    // Rendering principale del carrello
     function renderCart() {
       const container = document.getElementById('cart-container');
-      container.innerHTML = '';
+      const layout = document.getElementById('main-layout');
+      const summary = document.getElementById('summary-container');
+      const header = document.getElementById('page-header');
 
+      // Stato Vuoto
       if (cart.length === 0) {
-        container.innerHTML = `
-          <div class="empty-cart">
-            <h2>Il tuo carrello è vuoto</h2>
-            <p>Non hai ancora aggiunto nessun prodotto.</p>
+        layout.style.gridTemplateColumns = "1fr";
+        summary.style.display = "none";
+        header.style.display = "none";
+
+        layout.innerHTML = `
+          <div class="empty-cart-container">
+            <svg class="empty-cart-icon" width="100" height="100" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
+            </svg>
+            <h2>Il tuo carrello è vuoto!</h2>
+            <a href="index.html" class="btn-explore">Esplora il catalogo</a>
           </div>
         `;
-        updateSummary();
         return;
       }
+
+      container.innerHTML = '';
 
       cart.forEach((item, index) => {
         const itemTotal = item.price * item.qty;
         
-        // Costruzione HTML della card
         const cardHTML = `
           <div class="cart-item">
-            <img src="${item.img}" alt="${item.name}" class="item-img" />
+            <!-- Pulsante Elimina con Cestino SVG -->
+            <button class="btn-delete" onclick="deleteProduct(${index})" aria-label="Rimuovi prodotto dal carrello">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+
+            <!-- Immagine -->
+            <a href="#">
+              <img src="${item.img}" alt="${item.name}" class="item-img" />
+            </a>
+            
             <div class="item-details">
-              <div class="item-name">${item.name}</div>
-              <div class="item-sku">${item.sku}</div>
-              
-              <div class="item-total-price">${formatEUR(itemTotal)}</div>
-              <div class="item-unit-price">${formatEUR(item.price)} cad.</div>
-              
-              <div class="item-actions">
-                <div class="qty-selector">
-                  <button class="qty-btn" onclick="updateQty(${index}, -1)" aria-label="Riduci quantità">-</button>
-                  <input type="number" class="qty-input" value="${item.qty}" min="0" onchange="setQty(${index}, this.value)" />
-                  <button class="qty-btn" onclick="updateQty(${index}, 1)" aria-label="Aumenta quantità">+</button>
+              <div class="item-info-top">
+                <a href="#" class="item-name-link">${item.name}</a>
+                <div class="item-sku">${item.sku}</div>
+                <div class="item-status status-${item.status}">
+                  ${statusLabels[item.status]}
                 </div>
               </div>
               
-              <div class="item-status status-${item.status}">
-                ${statusLabels[item.status]}
+              <div class="item-info-bottom">
+                <div class="item-price-block">
+                  <div class="item-total-price">${formatEUR(itemTotal)}</div>
+                  <div class="item-unit-price">${formatEUR(item.price)} cad.</div>
+                </div>
+                
+                <!-- Selettore quantità ibrido: Pulsanti custom + Input nativo -->
+                <div class="qty-wrapper">
+                  <button class="qty-btn" onclick="updateQty(${index}, -1)" aria-label="Diminuisci quantità">-</button>
+                  <input type="number" class="qty-native-input" value="${item.qty}" min="0" onchange="setQty(${index}, this.value)" aria-label="Quantità" />
+                  <button class="qty-btn" onclick="updateQty(${index}, 1)" aria-label="Aumenta quantità">+</button>
+                </div>
               </div>
             </div>
           </div>
@@ -460,69 +590,60 @@
       updateSummary();
     }
 
-    // Modifica quantità con i bottoni (+ e -)
+    // Funzione aggiornata per bottoni + e - del nuovo selettore
     function updateQty(index, change) {
       const newQty = cart[index].qty + change;
       if (newQty <= 0) {
-        cart.splice(index, 1); // Rimuove dal carrello se arriva a 0
+        deleteProduct(index);
       } else {
         cart[index].qty = newQty;
+        renderCart();
       }
-      renderCart();
     }
 
-    // Imposta quantità scrivendo direttamente nell'input
+    // Input manuale
     function setQty(index, value) {
       const newQty = parseInt(value, 10);
       if (isNaN(newQty) || newQty <= 0) {
-        cart.splice(index, 1);
+        deleteProduct(index);
       } else {
         cart[index].qty = newQty;
+        renderCart();
       }
+    }
+
+    // Eliminazione prodotto
+    function deleteProduct(index) {
+      cart.splice(index, 1);
       renderCart();
     }
 
-    // Aggiorna Riepilogo e stato bottone Checkout
     function updateSummary() {
+      if (cart.length === 0) return;
+
       const subtotalEl = document.getElementById('summary-subtotal');
       const shippingEl = document.getElementById('summary-shipping');
       const totalEl = document.getElementById('summary-total');
       const checkoutBtn = document.getElementById('checkout-btn');
       const warningMsg = document.getElementById('checkout-warning');
 
-      // Calcolo subtotale
       const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-      
-      // Controllo se ci sono articoli non disponibili
       const hasUnavailable = cart.some(item => item.status === 'non_disponibile');
-      const isCartEmpty = cart.length === 0;
 
-      // Aggiornamento interfaccia riepilogo
       subtotalEl.textContent = formatEUR(subtotal);
+      shippingEl.textContent = formatEUR(shippingCost);
+      totalEl.textContent = formatEUR(subtotal + shippingCost);
       
-      if (isCartEmpty) {
-        shippingEl.textContent = formatEUR(0);
-        totalEl.textContent = formatEUR(0);
+      if (hasUnavailable) {
         checkoutBtn.disabled = true;
-        warningMsg.style.display = 'none';
+        warningMsg.style.display = 'block';
       } else {
-        shippingEl.textContent = formatEUR(shippingCost);
-        totalEl.textContent = formatEUR(subtotal + shippingCost);
-        
-        // Logica per disabilitare il bottone se un prodotto è Non Disponibile
-        if (hasUnavailable) {
-          checkoutBtn.disabled = true;
-          warningMsg.style.display = 'block';
-        } else {
-          checkoutBtn.disabled = false;
-          warningMsg.style.display = 'none';
-        }
+        checkoutBtn.disabled = false;
+        warningMsg.style.display = 'none';
       }
     }
 
-    // Inizializzazione al caricamento
     document.addEventListener('DOMContentLoaded', renderCart);
-
   </script>
 </body>
 </html>
