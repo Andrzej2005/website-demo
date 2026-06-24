@@ -59,18 +59,21 @@
       color: var(--clr-text); 
       transition: background-color 0.3s, color 0.3s;
       min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ═══════════════════════════════════════════════
        LAYOUT PAGINA
     ═══════════════════════════════════════════════ */
     .page-container {
+      width: 100%;
       max-width: 1100px;
       margin: 0 auto;
       padding: 40px 20px;
       display: flex;
       flex-direction: column;
-      min-height: calc(100dvh - 80px);
+      flex-grow: 1;
     }
 
     .page-header {
@@ -89,6 +92,14 @@
       gap: 32px;
       align-items: start;
       flex-grow: 1;
+    }
+    
+    /* Classe aggiunta dinamicamente quando il carrello è vuoto */
+    .cart-layout.is-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      grid-template-columns: none;
     }
 
     /* ═══════════════════════════════════════════════
@@ -183,7 +194,8 @@
     .item-info-bottom {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end; 
+      align-items: flex-end;
+      width: 100%;
     }
 
     .item-total-price {
@@ -199,7 +211,7 @@
       margin-top: 2px;
     }
 
-    /* Input Quantità personalizzato e pulito */
+    /* Selettore Quantità personalizzato */
     .qty-wrapper {
       display: flex;
       align-items: center;
@@ -241,10 +253,9 @@
       font-size: 1rem;
       font-weight: 600;
       outline: none;
-      -moz-appearance: textfield; /* Nasconde le frecce su Firefox */
+      -moz-appearance: textfield; 
     }
     
-    /* Nasconde le frecce native su Chrome/Safari/Edge */
     .qty-native-input::-webkit-outer-spin-button,
     .qty-native-input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -281,9 +292,6 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      flex-grow: 1; 
-      grid-column: 1 / -1; 
-      padding: 40px 20px;
     }
 
     .empty-cart-icon {
@@ -396,34 +404,31 @@
     }
     
     @media (max-width: 560px) {
-      /* Mantiene l'allineamento orizzontale ma adatta gli spazi */
       .cart-item { 
-        gap: 16px; 
+        flex-direction: column;
+        align-items: flex-start;
         padding: 16px; 
       }
       .item-img { 
-        width: 85px; 
-        height: 85px; 
+        width: 100%; 
+        height: 180px; 
       }
       .item-details { 
-        min-height: 85px; 
+        width: 100%;
+        min-height: auto; 
       }
       .item-info-top { 
-        padding-right: 32px; /* Spazio per il cestino */
+        padding-right: 32px;
       }
       .item-name-link { 
-        font-size: 1rem; 
+        font-size: 1.05rem; 
       }
-      
-      /* Impila prezzo e quantità sulla sinistra, NON centrati */
+      /* Mantiene il flex row e assicura il prezzo a sinistra e il selettore a destra */
       .item-info-bottom { 
-        flex-direction: column; 
-        align-items: flex-start; 
-        gap: 12px; 
-        margin-top: 12px;
-      }
-      .qty-wrapper { 
-        align-self: flex-start; /* Mantiene il box selettore a sinistra */
+        flex-direction: row; 
+        align-items: flex-end; 
+        justify-content: space-between;
+        margin-top: 16px;
       }
       .btn-delete { 
         top: 12px; 
@@ -434,7 +439,6 @@
 </head>
 <body>
 
-  <!-- Sincronizzazione Tema dal localStorage -->
   <script>
     if (localStorage.getItem('theme') === 'dark') {
       document.body.classList.add('dark-theme');
@@ -447,12 +451,9 @@
     </div>
 
     <div class="cart-layout" id="main-layout">
-      <!-- Sezione Prodotti -->
       <div class="cart-items" id="cart-container">
-        <!-- Generato via JavaScript -->
-      </div>
+        </div>
 
-      <!-- Sezione Riepilogo -->
       <div class="cart-summary" id="summary-container">
         <h3>Riepilogo Ordine</h3>
         <div class="summary-row">
@@ -474,7 +475,6 @@
   </div>
 
   <script>
-    // Dati fittizi
     let cart = [
       {
         id: 1,
@@ -522,9 +522,9 @@
       const summary = document.getElementById('summary-container');
       const header = document.getElementById('page-header');
 
-      // Stato Vuoto
+      // Layout Carrello Vuoto Centrato
       if (cart.length === 0) {
-        layout.style.gridTemplateColumns = "1fr";
+        layout.classList.add('is-empty');
         summary.style.display = "none";
         header.style.display = "none";
 
@@ -547,14 +547,12 @@
         
         const cardHTML = `
           <div class="cart-item">
-            <!-- Pulsante Elimina con Cestino SVG -->
             <button class="btn-delete" onclick="deleteProduct(${index})" aria-label="Rimuovi prodotto dal carrello">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
 
-            <!-- Immagine -->
             <a href="#">
               <img src="${item.img}" alt="${item.name}" class="item-img" />
             </a>
@@ -574,7 +572,6 @@
                   <div class="item-unit-price">${formatEUR(item.price)} cad.</div>
                 </div>
                 
-                <!-- Selettore quantità ibrido: Pulsanti custom + Input nativo -->
                 <div class="qty-wrapper">
                   <button class="qty-btn" onclick="updateQty(${index}, -1)" aria-label="Diminuisci quantità">-</button>
                   <input type="number" class="qty-native-input" value="${item.qty}" min="0" onchange="setQty(${index}, this.value)" aria-label="Quantità" />
@@ -590,7 +587,6 @@
       updateSummary();
     }
 
-    // Funzione aggiornata per bottoni + e - del nuovo selettore
     function updateQty(index, change) {
       const newQty = cart[index].qty + change;
       if (newQty <= 0) {
@@ -601,7 +597,6 @@
       }
     }
 
-    // Input manuale
     function setQty(index, value) {
       const newQty = parseInt(value, 10);
       if (isNaN(newQty) || newQty <= 0) {
@@ -612,7 +607,6 @@
       }
     }
 
-    // Eliminazione prodotto
     function deleteProduct(index) {
       cart.splice(index, 1);
       renderCart();
