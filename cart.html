@@ -59,21 +59,18 @@
       color: var(--clr-text); 
       transition: background-color 0.3s, color 0.3s;
       min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
     }
 
     /* ═══════════════════════════════════════════════
        LAYOUT PAGINA
     ═══════════════════════════════════════════════ */
     .page-container {
-      width: 100%;
       max-width: 1100px;
       margin: 0 auto;
       padding: 40px 20px;
       display: flex;
       flex-direction: column;
-      flex-grow: 1;
+      min-height: 100dvh;
     }
 
     .page-header {
@@ -93,14 +90,6 @@
       align-items: start;
       flex-grow: 1;
     }
-    
-    /* Classe aggiunta dinamicamente quando il carrello è vuoto */
-    .cart-layout.is-empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      grid-template-columns: none;
-    }
 
     /* ═══════════════════════════════════════════════
        LISTA PRODOTTI (SINISTRA)
@@ -109,6 +98,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      width: 100%;
     }
 
     .cart-item {
@@ -194,8 +184,8 @@
     .item-info-bottom {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      width: 100%;
+      align-items: flex-end; 
+      margin-top: 12px;
     }
 
     .item-total-price {
@@ -211,7 +201,7 @@
       margin-top: 2px;
     }
 
-    /* Selettore Quantità personalizzato */
+    /* Input Quantità personalizzato e pulito */
     .qty-wrapper {
       display: flex;
       align-items: center;
@@ -255,14 +245,13 @@
       outline: none;
       -moz-appearance: textfield; 
     }
-    
     .qty-native-input::-webkit-outer-spin-button,
     .qty-native-input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
 
-    /* Pulsante elimina: Icona cestino, niente movimento al passaggio */
+    /* Pulsante elimina: Icona cestino */
     .btn-delete {
       position: absolute;
       top: 20px;
@@ -284,7 +273,7 @@
     }
 
     /* ═══════════════════════════════════════════════
-       SCHERMATA CARRELLO VUOTO
+       SCHERMATA CARRELLO VUOTO (Centrata Perfettamente)
     ═══════════════════════════════════════════════ */
     .empty-cart-container {
       display: flex;
@@ -292,6 +281,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      padding: 40px 20px;
     }
 
     .empty-cart-icon {
@@ -405,30 +395,26 @@
     
     @media (max-width: 560px) {
       .cart-item { 
-        flex-direction: column;
-        align-items: flex-start;
+        gap: 16px; 
         padding: 16px; 
       }
       .item-img { 
-        width: 100%; 
-        height: 180px; 
+        width: 85px; 
+        height: 85px; 
       }
       .item-details { 
-        width: 100%;
-        min-height: auto; 
+        min-height: 85px; 
       }
       .item-info-top { 
-        padding-right: 32px;
+        padding-right: 32px; 
       }
       .item-name-link { 
-        font-size: 1.05rem; 
+        font-size: 1rem; 
       }
-      /* Mantiene il flex row e assicura il prezzo a sinistra e il selettore a destra */
-      .item-info-bottom { 
-        flex-direction: row; 
-        align-items: flex-end; 
-        justify-content: space-between;
-        margin-top: 16px;
+      /* Rimpiccioliamo leggermente il selettore per risparmiare spazio */
+      .qty-wrapper {
+        transform: scale(0.9);
+        transform-origin: bottom right;
       }
       .btn-delete { 
         top: 12px; 
@@ -445,7 +431,7 @@
     }
   </script>
 
-  <div class="page-container">
+  <div class="page-container" id="page-container">
     <div class="page-header" id="page-header">
       <h1>Carrello</h1>
     </div>
@@ -475,6 +461,7 @@
   </div>
 
   <script>
+    // Dati fittizi
     let cart = [
       {
         id: 1,
@@ -522,9 +509,15 @@
       const summary = document.getElementById('summary-container');
       const header = document.getElementById('page-header');
 
-      // Layout Carrello Vuoto Centrato
+      // Stato Vuoto Centrato
       if (cart.length === 0) {
-        layout.classList.add('is-empty');
+        // Applichiamo stili inline per centrare tutto verticalmente/orizzontalmente nel page-container
+        layout.style.display = "flex";
+        layout.style.flexDirection = "column";
+        layout.style.justifyContent = "center";
+        layout.style.alignItems = "center";
+        layout.style.gridTemplateColumns = "none";
+        
         summary.style.display = "none";
         header.style.display = "none";
 
