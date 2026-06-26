@@ -40,27 +40,24 @@
     auto();
   }));
 
-  // Rimosso l'ascoltatore di eventi per carouselNext poiché il pulsante è stato rimosso
-
   // Avvio iniziale carosello
   setW();
   go(0);
   auto();
 
-  // Focus animazione Barra di ricerca
-  const wrap = document.getElementById('navSearch');
-  const inp = document.getElementById('searchInput');
-  inp.addEventListener('focus', () => wrap.classList.add('focused'));
-  inp.addEventListener('blur', () => wrap.classList.remove('focused'));
-
-  // Gestione Submit Form di Ricerca
-  wrap.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const query = inp.value.trim();
-    if(query) {
-      console.log("Ricerca avviata per:", query);
-    }
-  });
+  // Gestione Invio Ricerca tramite tasto Enter
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if(query) {
+          console.log("Ricerca avviata per:", query);
+        }
+      }
+    });
+  }
 
   // Switcher della Dark Mode con salvataggio delle preferenze in localStorage
   const themeToggle = document.getElementById('themeToggle');
