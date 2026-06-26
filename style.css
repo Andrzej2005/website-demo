@@ -1,8 +1,3 @@
-/* ======================================================
-   TECHSTORE - STYLESHEET RIPULITO E COMMENTATO
-   Modifica effettuata: rimossa la barra capsule dal layout
-====================================================== */
-
 /* =========================================
    1. VARIABILI GLOBALI E TEMI
 ========================================= */
@@ -153,6 +148,13 @@ body.dark-theme .icon-sun {
 /* =========================================
    4. BARRA DI RICERCA (SEARCH BAR)
 ========================================= */
+
+/* Nasconde la "x" di default nell'input type="search" per i browser WebKit */
+input[type="search"].inputBox_container::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 input[type="search"].inputBox_container {
   display: block;
   width: 100%;
@@ -517,13 +519,9 @@ body.dark-theme .category-card {
    8. FOOTER 
 ========================================= */
 .site-footer {
-  background-color: var(--clr-bg);
+  background-color: transparent; 
   border-top: 1px solid var(--clr-border);
   transition: background-color 0.3s ease;
-}
-
-body.dark-theme .site-footer {
-  background-color: #121212;
 }
 
 .footer-container {
@@ -531,19 +529,26 @@ body.dark-theme .site-footer {
   margin-left: auto;
   margin-right: auto;
   padding: 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra tutti i macro-blocchi verticalmente */
   overflow: hidden;
 }
 
-/* Navigazione */
+/* Navigazione: In colonna e centrata su mobile */
 .footer-nav {
-  margin: -0.5rem -1.25rem;
+  width: 100%;
+  margin: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 1.25rem;
 }
 
 .footer-nav .nav-link {
-  padding: 0.5rem 1.25rem;
+  padding: 0;
+  text-align: center;
 }
 
 .footer-nav .nav-link a {
@@ -562,11 +567,13 @@ body.dark-theme .site-footer {
   margin-top: 2rem;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1.5rem;
 }
 
 .social-link {
   color: var(--clr-muted);
+  display: inline-flex;
   transition: color 0.2s ease;
 }
 
@@ -579,15 +586,27 @@ body.dark-theme .site-footer {
   width: 1.5rem;
 }
 
-/* Testo Copyright */
-.footer-info {
+/* Testo Copyright: In colonna e centrato su mobile */
+.footer-info-wrapper {
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.footer-info {
+  margin: 0;
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--clr-muted);
 }
-.footer-info + .footer-info {
-  margin-top: 0.5rem;
+
+.footer-divider.hidden-mobile {
+  display: none;
+  color: var(--clr-muted);
 }
 
 /* =========================================
@@ -627,7 +646,6 @@ body.dark-theme .site-footer {
 
   .section { padding: 32px 16px; }
   .category-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .banner-strip { flex-direction: column; text-align: center; padding: 32px 16px; }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -659,7 +677,6 @@ body.dark-theme .site-footer {
 
   .section { padding: 48px 32px; }
   .category-grid { grid-template-columns: repeat(3, 1fr); }
-  .banner-strip { flex-direction: column; text-align: center; padding: 40px 32px; }
 }
 
 /* Media Queries del Footer */
@@ -692,7 +709,28 @@ body.dark-theme .site-footer {
 
   .section { padding: 56px 48px; }
   .category-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  .banner-strip { flex-direction: row; text-align: left; padding: 40px 48px; }
+
+  .footer-nav {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .footer-nav .nav-link {
+    padding: 0.5rem 1.25rem;
+  }
+
+  .footer-info-wrapper {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .footer-divider.hidden-mobile {
+    display: inline;
+  }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
@@ -700,7 +738,6 @@ body.dark-theme .site-footer {
   .section { padding: 56px 72px; }
   .slide-content { padding: 72px; }
   .slide-title { font-size: 2.8rem; }
-  .banner-strip { padding: 40px 72px; }
 }
 
 /* Altre Media Queries del Footer e Extra large devices (1024px, 1200px) */
